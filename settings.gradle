@@ -1,0 +1,6 @@
+include ':app'
+rootProject.name = "RK Official"
+//rootProject.name = "SARMTK Games"
+include ':IndiUpi'
+include ':autoimageslider'
+//include ':multiline-collapsingtoolbar'
