@@ -383,35 +383,31 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
         bt_submit.setOnClickListener(this);
     }
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
-                onBackPressed();
-                break;
-
-            case R.id.bt_submit:
-                hideKeyboard();
-                if (et_point.getText().toString().isEmpty()) {
-                    et_point.setError("Point Required !");
-                    et_point.requestFocus();
-                } else if (Integer.parseInt(et_point.getText().toString()) < 1) {
-                    et_point.setError("Minimum 100/- point Accepted !");
-                    et_point.requestFocus();
-                } else {
-                    int abc  = 2;
+        int id = v.getId();
+        if (id == R.id.iv_back) {
+            onBackPressed();
+        } else if (id == R.id.bt_submit) {
+            hideKeyboard();
+            if (et_point.getText().toString().isEmpty()) {
+                et_point.setError("Point Required !");
+                et_point.requestFocus();
+            } else if (Integer.parseInt(et_point.getText().toString()) < 1) {
+                et_point.setError("Minimum 100/- point Accepted !");
+                et_point.requestFocus();
+            } else {
+                int abc = 2;
 //                    if(paymentType == abc) {
 //                        createUpiGatewayOrder(Integer.parseInt(et_point.getText().toString().trim()));
 //                    }
 //                    else if(abc == 3){
-                        createAccessKeyForEassBuzzPayment(Integer.parseInt(et_point.getText().toString().trim()));
+                createAccessKeyForEassBuzzPayment(Integer.parseInt(et_point.getText().toString().trim()));
 //                    }
 //                    else {
 //                        paymentIndi(Integer.parseInt(et_point.getText().toString().trim()));
 //                    }
-                }
-                break;
+            }
         }
     }
 
@@ -623,36 +619,27 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
         Toast.makeText(getApplicationContext(), "Tag: " + tag + ", clicked on: " + item.getTitle(),
                 Toast.LENGTH_SHORT).show();
         Intent intent;
-        switch (item.getId()) {
-            case R.id.menuQrCode:
-
-                intent = new Intent(this, UpiPaymentGatewayActivity.class);
-                intent.putExtra("paymentUrl",upiGatewayPaymentData.getPaymentUrl());
-                startActivityForResult(intent, UPI_GATEWAY_REQUEST_CODE);
-                break;
-            case R.id.menuGpay:
-                intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(upiGatewayPaymentData.getUpiIntent().getGpayLink()));
-                startActivity(intent);
-                break;
-            case R.id.menuPaytm:
-                intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(upiGatewayPaymentData.getUpiIntent().getPaytmLink()));
-                startActivity(intent);
-                break;
-            case R.id.menuPhonepe:
-                intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(upiGatewayPaymentData.getUpiIntent().getPhonepeLink()));
-                startActivity(intent);
-                break;
-
-            case R.id.menuBhim:
-                intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(upiGatewayPaymentData.getUpiIntent().getBhimLink()));
-                startActivity(intent);
-                break;
-
-
+        int itemId = item.getId();
+        if (itemId == R.id.menuQrCode) {
+            intent = new Intent(this, UpiPaymentGatewayActivity.class);
+            intent.putExtra("paymentUrl", upiGatewayPaymentData.getPaymentUrl());
+            startActivityForResult(intent, UPI_GATEWAY_REQUEST_CODE);
+        } else if (itemId == R.id.menuGpay) {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(upiGatewayPaymentData.getUpiIntent().getGpayLink()));
+            startActivity(intent);
+        } else if (itemId == R.id.menuPaytm) {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(upiGatewayPaymentData.getUpiIntent().getPaytmLink()));
+            startActivity(intent);
+        } else if (itemId == R.id.menuPhonepe) {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(upiGatewayPaymentData.getUpiIntent().getPhonepeLink()));
+            startActivity(intent);
+        } else if (itemId == R.id.menuBhim) {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(upiGatewayPaymentData.getUpiIntent().getBhimLink()));
+            startActivity(intent);
         }
     }
 

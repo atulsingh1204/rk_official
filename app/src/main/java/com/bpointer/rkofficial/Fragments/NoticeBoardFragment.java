@@ -54,14 +54,11 @@ public class NoticeBoardFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
-                getActivity().onBackPressed();
-                break;
-
-            case R.id.rl_whats_app:
-                callNumber();
-                break;
+        int id = v.getId();
+        if (id == R.id.iv_back) {
+            getActivity().onBackPressed();
+        } else if (id == R.id.rl_whats_app) {
+            callNumber();
         }
     }
 

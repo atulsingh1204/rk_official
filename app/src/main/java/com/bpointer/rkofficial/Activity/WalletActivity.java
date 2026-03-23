@@ -39,18 +39,16 @@ public class WalletActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
+        int id = v.getId();
+            if (id == R.id.iv_back) {
                 onBackPressed();
-                break;
 
-            case R.id.cv_withdraw_funds:
+            } else if (id == R.id.cv_withdraw_funds) {
                 startActivity(new Intent(WalletActivity.this, WithdrawPoints.class));
-                break;
 
-            case R.id.cv_add_funds:
+            } else if (id == R.id.cv_add_funds) {
                 startActivity(new Intent(WalletActivity.this, AddPointActivity.class));
-                break;
+
         }
     }
 }

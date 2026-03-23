@@ -67,56 +67,48 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         cv_notice_board.setOnClickListener(this);
         cv_logout.setOnClickListener(this);
     }
-
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         Fragment fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        switch (v.getId()) {
-            case R.id.iv_back:
+        int id = v.getId();
+            if (id == R.id.iv_back) {
                 onBackPressed();
-                break;
 
-            case R.id.cv_profile:
+            } else if (id == R.id.cv_profile) {
                 fragment = new ProfileDetailsFragment();
                 fragmentTransaction.add(R.id.content, fragment);
                 fragmentTransaction.addToBackStack(fragment.toString());
                 fragmentTransaction.commit();
-                break;
 
-            case R.id.cv_generate_mpin:
+            } else if (id == R.id.cv_generate_mpin) {
                 fragment = new GenerateMPINFragment();
                 fragmentTransaction.add(R.id.content, fragment);
                 fragmentTransaction.addToBackStack(fragment.toString());
                 fragmentTransaction.commit();
-                break;
 
-            case R.id.cv_how_to_play:
+            } else if (id == R.id.cv_how_to_play) {
                 fragment = new HowToPlayFragment();
                 fragmentTransaction.add(R.id.content, fragment);
                 fragmentTransaction.addToBackStack(fragment.toString());
                 fragmentTransaction.commit();
-                break;
 
-            case R.id.cv_game_rate:
+            } else if (id == R.id.cv_game_rate) {
                 fragment = new GameRateFragment();
                 fragmentTransaction.add(R.id.content, fragment);
                 fragmentTransaction.addToBackStack(fragment.toString());
                 fragmentTransaction.commit();
-                break;
 
-            case R.id.cv_notice_board:
+            } else if (id == R.id.cv_notice_board) {
                 fragment = new NoticeBoardFragment();
                 fragmentTransaction.add(R.id.content, fragment);
                 fragmentTransaction.addToBackStack(fragment.toString());
                 fragmentTransaction.commit();
-                break;
 
-            case R.id.cv_logout:
+            } else if (id == R.id.cv_logout) {
                 showLogoutDialog();
-                break;
+
         }
     }
 

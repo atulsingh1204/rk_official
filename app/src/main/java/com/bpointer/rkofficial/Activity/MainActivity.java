@@ -153,16 +153,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                .start();
 
 
-
-        new AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.JSON)
-                .setUpdateJSON("https://app.rkboss.net/api/getapk")  // Your API for update info
-                .setDisplay(Display.DIALOG)  // Show update dialog
-                .setButtonUpdate("Update Now")  // Customize the button text
-                .setCancelable(false)  // Make the dialog not cancelable (force the user to update)
-                .setButtonDismiss(null)  // Disable the "Dismiss" button
-                .setButtonDoNotShowAgain(null)  // Disable the "Do Not Show Again" button
-                .start();
+//Commenting this method because this is creating the problem of update the dialog.(Push Notification Permission Added)
+//        new AppUpdater(this)
+//                .setUpdateFrom(UpdateFrom.JSON)
+//                .setUpdateJSON("https://app.rkboss.net/api/getapk")  // Your API for update info
+//                .setDisplay(Display.DIALOG)  // Show update dialog
+//                .setButtonUpdate("Update Now")  // Customize the button text
+//                .setCancelable(false)  // Make the dialog not cancelable (force the user to update)
+//                .setButtonDismiss(null)  // Disable the "Dismiss" button
+//                .setButtonDoNotShowAgain(null)  // Disable the "Do Not Show Again" button
+//                .start();
 
     }
 
@@ -345,39 +345,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rl_call.setOnClickListener(this);
         rl_whats_app.setOnClickListener(this);
     }
-
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         if (preferenceManager.getStringPreference(APP_STATUS).equalsIgnoreCase("1")) {
-            switch (v.getId()) {
-                case R.id.rl_notification:
+            int id = v.getId();
+            if (id == R.id.rl_notification) {
                     startActivity(new Intent(this, NotificationActivity.class));
-                    break;
 
-                case R.id.rl_wallet:
+            } else if (id == R.id.rl_wallet) {
                     startActivity(new Intent(this, WalletActivity.class));
-                    break;
 
-                case R.id.rl_share:
+            } else if (id == R.id.rl_share) {
                     share();
-                    break;
 
-                case R.id.rl_whats_app:
+            } else if (id == R.id.rl_whats_app) {
                     openWhatsAPP();
-                    break;
 
-                case R.id.rl_call:
+            } else if (id == R.id.rl_call) {
                     callNumber();
-                    break;
 
-                case R.id.rl_profile:
+            } else if (id == R.id.rl_profile) {
                     startActivity(new Intent(this, ProfileActivity.class));
-                    break;
 
-                case R.id.rl_history:
+            } else if (id == R.id.rl_history) {
                     startActivity(new Intent(this, HistoryActivity.class));
-                    break;
+
             }
         }
     }

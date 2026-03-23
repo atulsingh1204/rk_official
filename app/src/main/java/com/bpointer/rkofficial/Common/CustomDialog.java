@@ -2,12 +2,13 @@ package com.bpointer.rkofficial.Common;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.bpointer.rkofficial.R;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CustomDialog {
     Dialog dialog;
@@ -18,31 +19,20 @@ public class CustomDialog {
     }
 
     public void showSuccessDialog(String msg) {
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE);
-        sweetAlertDialog.setCancelable(false);
-        sweetAlertDialog.setTitleText(msg)
-                .setConfirmText("OK")
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sDialog) {
-                        sDialog.dismissWithAnimation();
-                    }
-                })
+        new AlertDialog.Builder(context)
+                .setTitle("Success")
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", (d, which) -> d.dismiss())
                 .show();
     }
 
     public void showFailureDialog(String msg) {
-        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE);
-        sweetAlertDialog.setCancelable(false);
-        sweetAlertDialog.setTitleText(msg)
-                .setConfirmText("OK")
-                .setConfirmButtonBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sDialog) {
-                        sDialog.dismissWithAnimation();
-                    }
-                })
+        new AlertDialog.Builder(context)
+                .setTitle("Error")
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", (d, which) -> d.dismiss())
                 .show();
     }
 
@@ -50,12 +40,17 @@ public class CustomDialog {
         Dialog dialog2 = new Dialog(context, R.style.alert_dialog_light);
         this.dialog = dialog2;
         dialog2.setContentView(R.layout.loading_layout);
+        if (dialog2.getWindow() != null) {
+            dialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
         this.dialog.setCancelable(false);
         this.dialog.setCanceledOnTouchOutside(false);
         this.dialog.show();
     }
 
     public void closeLoader() {
-        this.dialog.dismiss();
+        if (this.dialog != null && this.dialog.isShowing()) {
+            this.dialog.dismiss();
+        }
     }
 }

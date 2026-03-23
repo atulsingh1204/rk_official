@@ -17,19 +17,14 @@ import com.bpointer.rkofficial.Api.Authentication;
 import com.bpointer.rkofficial.Common.CustomDialog;
 import com.bpointer.rkofficial.Common.PreferenceManager;
 import com.bpointer.rkofficial.Common.SessionManager;
-import com.bpointer.rkofficial.Model.Response.AdminDetailsResponseModel.AdminDetailsResponseModel;
 import com.bpointer.rkofficial.Model.Response.GetAppVersionResponse.GetAppVersionResponse;
 import com.bpointer.rkofficial.R;
-import com.github.javiersantos.appupdater.AppUpdater;
-import com.github.javiersantos.appupdater.enums.Display;
-import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import static com.bpointer.rkofficial.Common.AppConstant.TOKEN_ID;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,8 +32,6 @@ import retrofit2.Response;
 public class SplashScreenActivity extends AppCompatActivity {
    SessionManager sessionManager;
    PreferenceManager preferenceManager;
-   SweetAlertDialog sweetAlertDialog;
-   int version;
    CustomDialog customDialog;
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +60,40 @@ public class SplashScreenActivity extends AppCompatActivity {
    @Override
    protected void onResume() {
       super.onResume();
+      checkAppVersion(getCurrentVersionName());
+   }
+
+   private String getCurrentVersionName() {
       try {
          PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-         version = pInfo.versionCode;
-         
-         checkAppVersion(version);
-         Log.e("App Version", "App Version: " + version);
+         return pInfo.versionName;
       } catch (PackageManager.NameNotFoundException e) {
          e.printStackTrace();
+         return "0";
+      }
+   }
+
+   // Returns true if backendVersion is newer than currentVersion
+   // Compares each segment numerically, e.g. "1.0.1.3" > "1.0.1.1"
+   private boolean isUpdateRequired(String currentVersion, String backendVersion) {
+      try {
+         String[] current = currentVersion.split("\\.");
+         String[] backend = backendVersion.split("\\.");
+         int maxLen = Math.max(current.length, backend.length);
+         for (int i = 0; i < maxLen; i++) {
+            int c = i < current.length ? Integer.parseInt(current[i]) : 0;
+            int b = i < backend.length ? Integer.parseInt(backend[i]) : 0;
+            if (b > c) return true;
+            if (b < c) return false;
+         }
+         return false; // versions are equal
+      } catch (NumberFormatException e) {
+         Log.e("SplashScreen", "Version parse error: " + e.getMessage());
+         return false;
       }
    }
    
-   private void checkAppVersion(int version) {
+   private void checkAppVersion(String currentVersion) {
       customDialog.showLoader();
       Call<GetAppVersionResponse> call = Api.getClient().create(Authentication.class).getAppVersion();
       call.enqueue(new Callback<GetAppVersionResponse>() {
@@ -87,8 +102,8 @@ public class SplashScreenActivity extends AppCompatActivity {
             customDialog.closeLoader();
             if (response.body() != null) {
                if (response.body().getStatus().equals("true")) {
-                  int versionFromBackend = Integer.parseInt(response.body().getData().getAppVersion());
-                  if (version < versionFromBackend) {
+                  String backendVersion = response.body().getData().getAppVersion();
+                  if (isUpdateRequired(currentVersion, "1.0.1.1")) {
                      updateApp();
                   } else {
                      callIntent();
@@ -124,24 +139,27 @@ public class SplashScreenActivity extends AppCompatActivity {
       }, 2000);
    }
    
+
    private void updateApp() {
-      sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
-      sweetAlertDialog.setCancelable(false);
-      sweetAlertDialog.setTitleText("Update Available")
-            .setContentText("You are using older version, please update!")
-            .setConfirmText("Yes, update it!")
-            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-               @Override
-               public void onClick(SweetAlertDialog sDialog) {
-                  sDialog.dismissWithAnimation();
-                  final String appPackageName = getPackageName(); // package name of the app
-                  try {
-                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                  } catch (android.content.ActivityNotFoundException anfe) {
-                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                  }
-               }
-            })
-            .show();
+      runOnUiThread(() -> {
+         if (isFinishing() || isDestroyed()) return;
+         try {
+            new androidx.appcompat.app.AlertDialog.Builder(SplashScreenActivity.this)
+                  .setTitle("Update Available")
+                  .setMessage("You are using an older version, please update!")
+                  .setCancelable(false)
+                  .setPositiveButton("Update Now", (dialog, which) -> {
+                     final String appPackageName = getPackageName();
+                     try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                     } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                     }
+                  })
+                  .show();
+         } catch (Exception e) {
+            Log.e("SplashScreen", "updateApp dialog error: " + e.getMessage());
+         }
+      });
    }
 }

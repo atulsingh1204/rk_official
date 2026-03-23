@@ -189,20 +189,16 @@ public class MotorActivity extends AppCompatActivity implements View.OnClickList
       }
       return str2;
    }
-   
-   @SuppressLint("NonConstantResourceId")
    @Override
    public void onClick(View v) {
-      switch (v.getId()) {
-         case R.id.iv_back:
+      int id = v.getId();
+            if (id == R.id.iv_back) {
             onBackPressed();
-            break;
-         
-         case R.id.tv_type:
+
+            } else if (id == R.id.tv_type) {
             showTypeDialog();
-            break;
-         
-         case R.id.bt_add:
+
+            } else if (id == R.id.bt_add) {
             hideKeyboard();
             if (visibility_open || visibility_close) {
                if (tv_date.getText().toString().trim().equals("SELECT DATE")) {
@@ -229,16 +225,15 @@ public class MotorActivity extends AppCompatActivity implements View.OnClickList
             } else {
                customDialog.showFailureDialog("Sorry ! Market is Closed !");
             }
-            break;
-         
-         case R.id.bt_submit:
+
+            } else if (id == R.id.bt_submit) {
             hideKeyboard();
             if (played_points == 0) {
                customDialog.showFailureDialog("Please Play Games !");
             } else {
                playGameAPI();
             }
-            break;
+
       }
    }
    

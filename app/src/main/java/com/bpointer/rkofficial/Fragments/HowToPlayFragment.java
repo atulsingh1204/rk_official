@@ -46,14 +46,11 @@ public class HowToPlayFragment extends Fragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
-                getActivity().onBackPressed();
-                break;
-
-            case R.id.tv_name:
-                openLink();
-                break;
+        int id = v.getId();
+        if (id == R.id.iv_back) {
+            getActivity().onBackPressed();
+        } else if (id == R.id.tv_name) {
+            openLink();
         }
     }
 

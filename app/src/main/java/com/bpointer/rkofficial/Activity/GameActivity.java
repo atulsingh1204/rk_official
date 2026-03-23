@@ -124,259 +124,223 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
       finish();
    }
    
-   @SuppressLint("NonConstantResourceId")
    @Override
    public void onClick(View v) {
       Intent intent;
-      switch (v.getId()) {
-         case R.id.iv_back:
-            onBackPressed();
-            break;
-         
-         case R.id.single_digit:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, SingleDigitActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(0).getGameName());
-               intent.putExtra("game_id", gameList.get(0).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.jodi_digit:
-            if (checkOpenMarketStatus()) {
-               intent = new Intent(this, JodiDigitActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(1).getGameName());
-               intent.putExtra("game_id", gameList.get(1).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.odd_even:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, OddEvenActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(2).getGameName());
-               intent.putExtra("game_id", gameList.get(2).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         
-         case R.id.single_panna:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, SinglePannaActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(3).getGameName());
-               intent.putExtra("game_id", gameList.get(3).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.double_panna:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, DoublePannaActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(4).getGameName());
-               intent.putExtra("game_id", gameList.get(4).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.triple_panna:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, TriplePannaActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(5).getGameName());
-               intent.putExtra("game_id", gameList.get(5).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         
-         case R.id.jodi_family:
-            if (checkOpenMarketStatus()) {
-               intent = new Intent(this, JodiFamilyActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(6).getGameName());
-               intent.putExtra("game_id", gameList.get(6).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.panna_family:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, PannaFamilyActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(7).getGameName());
-               intent.putExtra("game_id", gameList.get(7).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.red_bracket:
-            if (checkOpenMarketStatus()) {
-               intent = new Intent(this, RedBracketActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(8).getGameName());
-               intent.putExtra("game_id", gameList.get(8).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.half_sangam:
-            if (checkOpenMarketStatus()) {
-               intent = new Intent(this, HalfSangamActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(9).getGameName());
-               intent.putExtra("game_id", gameList.get(9).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.full_sangam:
-            if (checkOpenMarketStatus()) {
-               intent = new Intent(this, FullSangamActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(10).getGameName());
-               intent.putExtra("game_id", gameList.get(10).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.sp_motor:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, MotorActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(11).getGameName());
-               intent.putExtra("game_id", gameList.get(11).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.dp_motor:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, MotorActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(12).getGameName());
-               intent.putExtra("game_id", gameList.get(12).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.digit_based_jodi:
-            if (checkOpenMarketStatus()) {
-               intent = new Intent(this, DigitBasedJodiActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(13).getGameName());
-               intent.putExtra("game_id", gameList.get(13).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.two_digit_panna:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, TwoDigitPannaActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(14).getGameName());
-               intent.putExtra("game_id", gameList.get(14).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
-         
-         case R.id.sp_dp_tp:
-            if (checkCloseMarketStatus()) {
-               intent = new Intent(this, SpDpTpActivity.class);
-               intent.putExtra("company_id", company_id);
-               intent.putExtra("company_name", company_name);
-               intent.putExtra("open_time", open_time);
-               intent.putExtra("close_time", close_time);
-               intent.putExtra("game_name", gameList.get(15).getGameName());
-               intent.putExtra("game_id", gameList.get(15).getGameId());
-               startActivity(intent);
-            } else {
-               customDialog.showFailureDialog("Sorry ! Market is Closed !");
-            }
-            break;
+      int id = v.getId();
+      if (id == R.id.iv_back) {
+         onBackPressed();
+      } else if (id == R.id.single_digit) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, SingleDigitActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(0).getGameName());
+            intent.putExtra("game_id", gameList.get(0).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.jodi_digit) {
+         if (checkOpenMarketStatus()) {
+            intent = new Intent(this, JodiDigitActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(1).getGameName());
+            intent.putExtra("game_id", gameList.get(1).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.odd_even) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, OddEvenActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(2).getGameName());
+            intent.putExtra("game_id", gameList.get(2).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.single_panna) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, SinglePannaActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(3).getGameName());
+            intent.putExtra("game_id", gameList.get(3).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.double_panna) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, DoublePannaActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(4).getGameName());
+            intent.putExtra("game_id", gameList.get(4).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.triple_panna) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, TriplePannaActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(5).getGameName());
+            intent.putExtra("game_id", gameList.get(5).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.jodi_family) {
+         if (checkOpenMarketStatus()) {
+            intent = new Intent(this, JodiFamilyActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(6).getGameName());
+            intent.putExtra("game_id", gameList.get(6).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.panna_family) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, PannaFamilyActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(7).getGameName());
+            intent.putExtra("game_id", gameList.get(7).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.red_bracket) {
+         if (checkOpenMarketStatus()) {
+            intent = new Intent(this, RedBracketActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(8).getGameName());
+            intent.putExtra("game_id", gameList.get(8).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.half_sangam) {
+         if (checkOpenMarketStatus()) {
+            intent = new Intent(this, HalfSangamActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(9).getGameName());
+            intent.putExtra("game_id", gameList.get(9).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.full_sangam) {
+         if (checkOpenMarketStatus()) {
+            intent = new Intent(this, FullSangamActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(10).getGameName());
+            intent.putExtra("game_id", gameList.get(10).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.sp_motor) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, MotorActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(11).getGameName());
+            intent.putExtra("game_id", gameList.get(11).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.dp_motor) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, MotorActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(12).getGameName());
+            intent.putExtra("game_id", gameList.get(12).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.digit_based_jodi) {
+         if (checkOpenMarketStatus()) {
+            intent = new Intent(this, DigitBasedJodiActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(13).getGameName());
+            intent.putExtra("game_id", gameList.get(13).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.two_digit_panna) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, TwoDigitPannaActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(14).getGameName());
+            intent.putExtra("game_id", gameList.get(14).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
+      } else if (id == R.id.sp_dp_tp) {
+         if (checkCloseMarketStatus()) {
+            intent = new Intent(this, SpDpTpActivity.class);
+            intent.putExtra("company_id", company_id);
+            intent.putExtra("company_name", company_name);
+            intent.putExtra("open_time", open_time);
+            intent.putExtra("close_time", close_time);
+            intent.putExtra("game_name", gameList.get(15).getGameName());
+            intent.putExtra("game_id", gameList.get(15).getGameId());
+            startActivity(intent);
+         } else {
+            customDialog.showFailureDialog("Sorry ! Market is Closed !");
+         }
       }
    }
-   
+
    private void getGamesAPI() {
       customDialog.showLoader();
       

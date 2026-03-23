@@ -69,14 +69,11 @@ public class GenerateMPINFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
-                getActivity().onBackPressed();
-                break;
-
-            case R.id.cv_generate_mpin:
-                generateMPINDialog();
-                break;
+        int id = v.getId();
+        if (id == R.id.iv_back) {
+            getActivity().onBackPressed();
+        } else if (id == R.id.cv_generate_mpin) {
+            generateMPINDialog();
         }
     }
 

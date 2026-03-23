@@ -43,26 +43,22 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
+        int id = v.getId();
+            if (id == R.id.iv_back) {
                 onBackPressed();
-                break;
 
-            case R.id.cv_bid_history:
+            } else if (id == R.id.cv_bid_history) {
                 startActivity(new Intent(HistoryActivity.this, GameHistoryActivity.class));
-                break;
 
-            case R.id.cv_withdraw_history:
+            } else if (id == R.id.cv_withdraw_history) {
                 startActivity(new Intent(HistoryActivity.this, WithdrawHistoryActivity.class));
-                break;
 
-            case R.id.cv_deposit_history:
+            } else if (id == R.id.cv_deposit_history) {
                 startActivity(new Intent(HistoryActivity.this, DepositHistoryActivity.class));
-                break;
 
-            case R.id.cv_winning_history:
+            } else if (id == R.id.cv_winning_history) {
                 startActivity(new Intent(HistoryActivity.this,WinHistoryActivity.class));
-                break;
+
         }
     }
 }

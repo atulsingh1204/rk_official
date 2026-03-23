@@ -122,26 +122,22 @@ public class WithdrawHistoryActivity extends AppCompatActivity implements View.O
         tv_date.setOnClickListener(this);
         bt_search.setOnClickListener(this);
     }
-
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
+        int id = v.getId();
+            if (id == R.id.iv_back) {
                 onBackPressed();
-                break;
 
-            case R.id.tv_date:
+            } else if (id == R.id.tv_date) {
                 openCalender();
-                break;
 
-            case R.id.bt_search:
+            } else if (id == R.id.bt_search) {
                 if (tv_date.getText().toString().equals("Select Date")){
                     customDialog.showFailureDialog("Please Select Date");
                 }else {
                     getWithdrawHistoryAPI(tv_date.getText().toString());
                 }
-                break;
+
         }
     }
 

@@ -123,25 +123,19 @@ public class DepositHistoryActivity extends AppCompatActivity implements View.On
         bt_search.setOnClickListener(this);
     }
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
-                onBackPressed();
-                break;
-
-            case R.id.tv_date:
-                openCalender();
-                break;
-
-            case R.id.bt_search:
-                if (tv_date.getText().toString().equals("Select Date")) {
-                    customDialog.showFailureDialog("Please Select Date");
-                } else {
-                    getDepositHistoryAPI(tv_date.getText().toString());
-                }
-                break;
+        int id = v.getId();
+        if (id == R.id.iv_back) {
+            onBackPressed();
+        } else if (id == R.id.tv_date) {
+            openCalender();
+        } else if (id == R.id.bt_search) {
+            if (tv_date.getText().toString().equals("Select Date")) {
+                customDialog.showFailureDialog("Please Select Date");
+            } else {
+                getDepositHistoryAPI(tv_date.getText().toString());
+            }
         }
     }
 

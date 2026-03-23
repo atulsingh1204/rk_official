@@ -148,16 +148,13 @@ public class JodiDigitActivity extends AppCompatActivity implements View.OnClick
       bt_add.setOnClickListener(this);
       bt_submit.setOnClickListener(this);
    }
-   
-   @SuppressLint("NonConstantResourceId")
    @Override
    public void onClick(View v) {
-      switch (v.getId()) {
-         case R.id.iv_back:
+      int id = v.getId();
+            if (id == R.id.iv_back) {
             onBackPressed();
-            break;
-         
-         case R.id.bt_add:
+
+            } else if (id == R.id.bt_add) {
             hideKeyboard();
             if (visibility_open) {
                if (tv_date.getText().toString().trim().equals("SELECT DATE")) {
@@ -182,16 +179,15 @@ public class JodiDigitActivity extends AppCompatActivity implements View.OnClick
             } else {
                customDialog.showFailureDialog("Sorry ! Market is Closed !");
             }
-            break;
-         
-         case R.id.bt_submit:
+
+            } else if (id == R.id.bt_submit) {
             hideKeyboard();
             if (played_points == 0) {
                customDialog.showFailureDialog("Please Play Games !");
             } else {
                playGameAPI();
             }
-            break;
+
       }
    }
    
@@ -248,7 +244,7 @@ public class JodiDigitActivity extends AppCompatActivity implements View.OnClick
       for (CartModel model : cartModelList) {
          if (digit.equals(model.getNumber())) {
             alreadyPlayed = true;
-            break;
+
          }
       }
       if (alreadyPlayed) {

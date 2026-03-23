@@ -122,15 +122,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         tv_new_user.setOnClickListener(this);
         tv_forgot_password.setOnClickListener(this);
     }
-
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         Fragment fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        switch (v.getId()) {
-            case R.id.bt_login:
+        int id = v.getId();
+            if (id == R.id.bt_login) {
                 if (et_mobile.getText().toString().trim().isEmpty() || et_mobile.getText().toString().trim().length() < 10) {
                     et_mobile.setError("Mobile No. Required !");
                 } else if (et_password.getText().toString().trim().isEmpty()) {
@@ -138,25 +136,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else {
                     loginAPI();
                 }
-                break;
 
-            case R.id.bt_login_mpin:
+            } else if (id == R.id.bt_login_mpin) {
                 fragment = new LoginMPINFragment();
                 fragmentTransaction.add(R.id.content, fragment);
                 fragmentTransaction.addToBackStack(fragment.toString());
                 fragmentTransaction.commit();
-                break;
 
-            case R.id.tv_forgot_password:
+            } else if (id == R.id.tv_forgot_password) {
                 fragment = new ForgotPasswordFragment();
                 fragmentTransaction.add(R.id.content, fragment);
                 fragmentTransaction.addToBackStack(fragment.toString());
                 fragmentTransaction.commit();
-                break;
 
-            case R.id.tv_new_user:
+            } else if (id == R.id.tv_new_user) {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                break;
+
         }
     }
 

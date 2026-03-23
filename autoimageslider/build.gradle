@@ -4,6 +4,7 @@ apply plugin: 'com.android.library'
 
 
 android {
+    namespace "com.smarteist.autoimageslider"
     compileSdkVersion 34
 
     defaultConfig {

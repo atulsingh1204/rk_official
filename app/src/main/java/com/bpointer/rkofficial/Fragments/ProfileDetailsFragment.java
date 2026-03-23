@@ -117,33 +117,21 @@ public class ProfileDetailsFragment extends Fragment implements View.OnClickList
         cv_phonepe.setOnClickListener(this);
     }
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
-                getActivity().onBackPressed();
-                break;
-
-            case R.id.cv_address:
-                showAddressDialog();
-                break;
-
-            case R.id.cv_bank:
-                showBankDialog();
-                break;
-
-            case R.id.cv_paytm:
-                showPaytmDialog();
-                break;
-
-            case R.id.cv_gpay:
-                showGPayDialog();
-                break;
-
-            case R.id.cv_phonepe:
-                showPhonePeDialog();
-                break;
+        int id = v.getId();
+        if (id == R.id.iv_back) {
+            getActivity().onBackPressed();
+        } else if (id == R.id.cv_address) {
+            showAddressDialog();
+        } else if (id == R.id.cv_bank) {
+            showBankDialog();
+        } else if (id == R.id.cv_paytm) {
+            showPaytmDialog();
+        } else if (id == R.id.cv_gpay) {
+            showGPayDialog();
+        } else if (id == R.id.cv_phonepe) {
+            showPhonePeDialog();
         }
     }
 

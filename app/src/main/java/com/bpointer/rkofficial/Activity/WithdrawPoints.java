@@ -101,16 +101,13 @@ public class WithdrawPoints extends AppCompatActivity implements View.OnClickLis
         tv_transaction_history.setOnClickListener(this);
         bt_submit.setOnClickListener(this);
     }
-
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
+        int id = v.getId();
+            if (id == R.id.iv_back) {
                 onBackPressed();
-                break;
 
-            case R.id.bt_submit:
+            } else if (id == R.id.bt_submit) {
                 if (et_point.getText().toString().isEmpty()) {
                     et_point.setError("Point Required !");
                     et_point.requestFocus();
@@ -123,15 +120,13 @@ public class WithdrawPoints extends AppCompatActivity implements View.OnClickLis
                 } else {
                     withdrawAmountAPI();
                 }
-                break;
 
-            case R.id.tv_video:
+            } else if (id == R.id.tv_video) {
                 openLink();
-                break;
 
-            case R.id.tv_transaction_history:
+            } else if (id == R.id.tv_transaction_history) {
                 startActivity(new Intent(WithdrawPoints.this, WithdrawHistoryActivity.class));
-                break;
+
         }
     }
 
