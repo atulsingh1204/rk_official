@@ -39,10 +39,15 @@ import com.bpointer.rkofficial.Model.upigateway.UpiGatewayOrderRequest;
 import com.bpointer.rkofficial.Model.upigateway.UpiGatewayOrderResponse;
 import com.bpointer.rkofficial.Model.upigateway.paymentstatus.UpiGatewayOrderPaymentStatus;
 import com.bpointer.rkofficial.R;
+import com.bpointer.rkofficial.Model.Response.RazorpayOrderResponseModel;
+import com.bpointer.rkofficial.Model.Response.RazorpayPaymentSuccessResponse;
 import com.easebuzz.payment.kit.PWECheckoutActivity;
 import com.gpfreetech.IndiUpi.IndiUpi;
 import com.gpfreetech.IndiUpi.entity.TransactionResponse;
 import com.gpfreetech.IndiUpi.listener.PaymentStatusListener;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentData;
+import com.razorpay.PaymentResultWithDataListener;
 
 import nl.invissvenska.modalbottomsheetdialog.Item;
 import nl.invissvenska.modalbottomsheetdialog.ModalBottomSheetDialog;
@@ -69,7 +74,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddPointActivity extends AppCompatActivity implements View.OnClickListener,
-        PaymentStatusListener, ModalBottomSheetDialog.Listener {
+        PaymentStatusListener, ModalBottomSheetDialog.Listener, PaymentResultWithDataListener {
 
     EditText et_point;
     Button bt_submit;
@@ -95,7 +100,13 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_point);
-    
+
+        // Preload Razorpay SDK assets early so the checkout opens instantly.
+        // ⚠️ Call preload() here — NOT inside openRazorpayCheckout() — to avoid
+        //    SDK internal-state race conditions that cause "Uh! oh! Something went
+        //    wrong" and a non-functional close button.
+        Checkout.preload(getApplicationContext());
+
         initView();
 
         getHomeDataAPI();
@@ -397,18 +408,219 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
                 et_point.setError("Minimum 100/- point Accepted !");
                 et_point.requestFocus();
             } else {
-                int abc = 2;
-//                    if(paymentType == abc) {
-//                        createUpiGatewayOrder(Integer.parseInt(et_point.getText().toString().trim()));
-//                    }
-//                    else if(abc == 3){
-                createAccessKeyForEassBuzzPayment(Integer.parseInt(et_point.getText().toString().trim()));
-//                    }
-//                    else {
-//                        paymentIndi(Integer.parseInt(et_point.getText().toString().trim()));
-//                    }
+                // ── Razorpay Payment ──────────────────────────────────────────────
+                initiateRazorpayPayment(Integer.parseInt(et_point.getText().toString().trim()));
             }
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  Razorpay: Step-1  Create order on server
+    // ─────────────────────────────────────────────────────────────────────────────
+    private void initiateRazorpayPayment(int amt) {
+        customDialog.showLoader();
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("user_id", userId);
+        requestBody.put("payment_amount", amt);
+
+        Call<RazorpayOrderResponseModel> call =
+                Api.getClient().create(Authentication.class).initiateRazorpayOrder(requestBody);
+
+        call.enqueue(new Callback<RazorpayOrderResponseModel>() {
+            @Override
+            public void onResponse(@NonNull Call<RazorpayOrderResponseModel> call,
+                                   @NonNull Response<RazorpayOrderResponseModel> response) {
+                customDialog.closeLoader();
+                if (response.isSuccessful() && response.body() != null && response.body().isStatus()) {
+                    RazorpayOrderResponseModel.RazorpayOrderData orderData = response.body().getData();
+                    openRazorpayCheckout(
+                            orderData.getRazorpayOrderId(),
+                            orderData.getAmount(),
+                            orderData.getCurrency()
+                    );
+                } else {
+                    String msg = (response.body() != null) ? response.body().getMessage()
+                                                           : "Failed to create order";
+                    Toast.makeText(AddPointActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RazorpayOrderResponseModel> call, @NonNull Throwable t) {
+                customDialog.closeLoader();
+                Log.e("RazorpayOrder", "onFailure: " + t.getMessage());
+                Toast.makeText(AddPointActivity.this, "Network error: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  Razorpay: Step-2  Open Razorpay Checkout
+    // ─────────────────────────────────────────────────────────────────────────────
+    private void openRazorpayCheckout(String orderId, int amount, String currency) {
+        // Log everything so we can verify what is being sent to Razorpay
+        Log.d("RazorpayCheckout", "=== Razorpay Checkout Params ===");
+        Log.d("RazorpayCheckout", "Key ID      : " + BuildConfig.RAZORPAY_KEY_ID);
+        Log.d("RazorpayCheckout", "Order ID    : " + orderId);
+        Log.d("RazorpayCheckout", "Amount(paise): " + amount);
+        Log.d("RazorpayCheckout", "Currency    : " + currency);
+        Log.d("RazorpayCheckout", "================================");
+
+        // Validate key format before opening — must start with rzp_test_ or rzp_live_
+        if (!BuildConfig.RAZORPAY_KEY_ID.startsWith("rzp_test_")
+                && !BuildConfig.RAZORPAY_KEY_ID.startsWith("rzp_live_")) {
+            Log.e("RazorpayCheckout", "INVALID KEY FORMAT: " + BuildConfig.RAZORPAY_KEY_ID
+                    + "  — Key must start with rzp_test_ or rzp_live_");
+            Toast.makeText(this, "Razorpay key misconfigured. Contact support.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Validate order_id format — Razorpay order IDs always start with "order_"
+        if (orderId == null || !orderId.startsWith("order_")) {
+            Log.e("RazorpayCheckout", "INVALID ORDER ID: " + orderId
+                    + "  — Order ID must start with 'order_'");
+            Toast.makeText(this, "Invalid order received from server. Try again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Validate key vs order environment match
+        // order_id starting with "order_" from test env works only with rzp_test_ key
+        // There is no reliable way to detect from order_id alone, but we log a warning:
+        if (BuildConfig.RAZORPAY_KEY_ID.startsWith("rzp_live_")) {
+            Log.w("RazorpayCheckout", "Using LIVE key. Make sure backend also uses LIVE API credentials.");
+        } else {
+            Log.w("RazorpayCheckout", "Using TEST key. Make sure backend also uses TEST API credentials.");
+        }
+
+        Checkout checkout = new Checkout();
+        checkout.setKeyID(BuildConfig.RAZORPAY_KEY_ID);
+
+        try {
+            JSONObject options = new JSONObject();
+            // Key must also be in options for some SDK versions
+            options.put("key", BuildConfig.RAZORPAY_KEY_ID);
+            options.put("name", TextUtils.isEmpty(display_name) ? "RK Game" : display_name);
+            options.put("description", "Add Funds to Wallet");
+            options.put("order_id", orderId);
+            options.put("currency", currency);
+            options.put("amount", amount);   // already in paise from server
+
+            // Prefill user details
+            JSONObject prefill = new JSONObject();
+            String mobile = preferenceManager.getStringPreference(MOBILE);
+            prefill.put("contact", mobile);
+            prefill.put("email", mobile + "@bpointer.com");
+            options.put("prefill", prefill);
+
+            // Theme
+            JSONObject theme = new JSONObject();
+            theme.put("color", "#C01A1A");
+            options.put("theme", theme);
+
+            // Store amount (in rupees) for addFundAPI after success
+            finalAmount = String.valueOf(amount / 100.0);
+
+            Log.d("RazorpayCheckout", "Final options: " + options.toString());
+            checkout.open(AddPointActivity.this, options);
+        } catch (Exception e) {
+            Log.e("RazorpayCheckout", "Error opening checkout: " + e.getMessage(), e);
+            Toast.makeText(this, "Error opening payment screen: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  Razorpay: Step-3  Payment callbacks
+    // ─────────────────────────────────────────────────────────────────────────────
+    @Override
+    public void onPaymentSuccess(String razorpayPaymentId, PaymentData paymentData) {
+        Log.d("RazorpayPayment", "Payment Success: " + razorpayPaymentId);
+
+        // Get order_id and signature from PaymentData for server-side signature verification
+        String orderId  = (paymentData != null) ? paymentData.getOrderId()   : "";
+        String signature = (paymentData != null) ? paymentData.getSignature() : "";
+
+        Log.d("RazorpayPayment", "orderId=" + orderId + " | signature=" + signature);
+
+        // Step-3a: Verify payment signature on server before crediting wallet
+        verifyRazorpayPaymentAPI(orderId, razorpayPaymentId, signature);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  Razorpay: Step-3a  Verify payment on server  →  POST razorpayPaymentSuccess
+    // ─────────────────────────────────────────────────────────────────────────────
+    private void verifyRazorpayPaymentAPI(String orderId, String paymentId, String signature) {
+        customDialog.showLoader();
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("razorpay_order_id",   orderId);
+        body.put("razorpay_payment_id", paymentId);
+        body.put("razorpay_signature",  signature);
+
+        Log.d("RazorpayVerify", "Calling razorpayPaymentSuccess | orderId=" + orderId
+                + " | paymentId=" + paymentId + " | signature=" + signature);
+
+        Call<RazorpayPaymentSuccessResponse> call =
+                Api.getClient().create(Authentication.class).verifyRazorpayPayment(body);
+
+        call.enqueue(new Callback<RazorpayPaymentSuccessResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<RazorpayPaymentSuccessResponse> call,
+                                   @NonNull Response<RazorpayPaymentSuccessResponse> response) {
+                customDialog.closeLoader();
+
+                if (response.isSuccessful() && response.body() != null) {
+                    RazorpayPaymentSuccessResponse result = response.body();
+                    Log.d("RazorpayVerify", "status=" + result.isStatus()
+                            + " | message=" + result.getMessage());
+
+                    if (result.isStatus()) {
+                        // Signature verified — credit wallet
+                        Toast.makeText(AddPointActivity.this, "Payment Successful", Toast.LENGTH_SHORT).show();
+                        addFundAPI(finalAmount, paymentId);
+                    } else {
+                        // Server says signature mismatch — do NOT credit wallet
+                        Log.e("RazorpayVerify", "Signature mismatch: " + result.getMessage());
+                        customDialog.showFailureDialog(
+                                "Payment verification failed: " + result.getMessage());
+                    }
+                } else {
+                    Log.e("RazorpayVerify", "Empty/error response: code=" + response.code());
+                    customDialog.showFailureDialog("Payment verification failed. Contact support.");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RazorpayPaymentSuccessResponse> call,
+                                  @NonNull Throwable t) {
+                customDialog.closeLoader();
+                Log.e("RazorpayVerify", "Network error: " + t.getMessage());
+                Toast.makeText(AddPointActivity.this,
+                        "Network error during verification: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onPaymentError(int code, String description, PaymentData paymentData) {
+        // code: 0=Network, 1=Invalid Options, 2=Payment cancelled, 3=TLS not supported
+        Log.e("RazorpayPayment", "Payment Error code=" + code + " | description=" + description);
+        if (paymentData != null) {
+            Log.e("RazorpayPayment", "PaymentData orderId=" + paymentData.getOrderId()
+                    + " | paymentId=" + paymentData.getPaymentId()
+                    + " | signature=" + paymentData.getSignature()
+                    + " | userContact=" + paymentData.getUserContact()
+                    + " | userEmail=" + paymentData.getUserEmail());
+        }
+        String userMsg;
+        switch (code) {
+            case 1: userMsg = "Payment config error: " + description; break;
+            case 2: userMsg = "Payment cancelled"; break;
+            default: userMsg = "Payment failed: " + description;
+        }
+        Toast.makeText(this, userMsg, Toast.LENGTH_LONG).show();
     }
 
     public void hideKeyboard() {

@@ -38,6 +38,8 @@ import com.bpointer.rkofficial.Model.Response.VerifyNumberResponseModel.VerifyNu
 import com.bpointer.rkofficial.Model.Response.WinHistoryResponseModel.WinHistoryResponseModel;
 import com.bpointer.rkofficial.Model.Response.WithdrawAmountResponseModel.WithdrawAmountResponseModel;
 import com.bpointer.rkofficial.Model.Response.WithdrawHistoryResponseModel.WithdrawHistoryResponseModel;
+import com.bpointer.rkofficial.Model.Response.RazorpayOrderResponseModel;
+import com.bpointer.rkofficial.Model.Response.RazorpayPaymentSuccessResponse;
 import com.bpointer.rkofficial.Model.upigateway.UpiGatewayOrderRequest;
 import com.bpointer.rkofficial.Model.upigateway.UpiGatewayOrderResponse;
 import com.bpointer.rkofficial.Model.upigateway.paymentstatus.UpiGatewayOrderPaymentStatus;
@@ -172,5 +174,11 @@ public interface Authentication {
 
     @POST("easebuzzPaymentFailure")
     Call<EasebuzzPaymentStatusSuccessFailureResponse> eassBuzzPaymentFailureResponseSave(@Body Map<String,Object> body);
+
+    @POST("razorpay/initiate")
+    Call<RazorpayOrderResponseModel> initiateRazorpayOrder(@Body Map<String, Object> body);
+
+    @POST("razorpayPaymentSuccess")
+    Call<RazorpayPaymentSuccessResponse> verifyRazorpayPayment(@Body Map<String, Object> body);
 
 }
