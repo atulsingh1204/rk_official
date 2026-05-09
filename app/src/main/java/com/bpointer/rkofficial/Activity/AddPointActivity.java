@@ -576,9 +576,10 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
                             + " | message=" + result.getMessage());
 
                     if (result.isStatus()) {
-                        // Signature verified — credit wallet
+                        // Signature verified — credit wallet then navigate
                         Toast.makeText(AddPointActivity.this, "Payment Successful", Toast.LENGTH_SHORT).show();
                         addFundAPI(finalAmount, paymentId);
+                        goToMainActivity();
                     } else {
                         // Server says signature mismatch — do NOT credit wallet
                         Log.e("RazorpayVerify", "Signature mismatch: " + result.getMessage());
@@ -621,6 +622,17 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
             default: userMsg = "Payment failed: " + description;
         }
         Toast.makeText(this, userMsg, Toast.LENGTH_LONG).show();
+    }
+
+    private void goToMainActivity() {
+        // Ensure any active loader is dismissed before finishing to prevent window leaks
+        if (customDialog != null) {
+            customDialog.closeLoader();
+        }
+        Intent intent = new Intent(AddPointActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     public void hideKeyboard() {
@@ -710,7 +722,9 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
                 customDialog.closeLoader();
                 if (response.body() != null) {
                     if (response.body().getStatus().equals("true")) {
-                        customDialog.showSuccessDialog(response.body().getMessage());
+                        if (!isFinishing() && !isDestroyed()) {
+                            customDialog.showSuccessDialog(response.body().getMessage());
+                        }
                         getHomeDataAPI();
                     } else {
                         Toast.makeText(AddPointActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();

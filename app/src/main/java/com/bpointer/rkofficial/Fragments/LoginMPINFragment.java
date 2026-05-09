@@ -31,6 +31,7 @@ import retrofit2.Response;
 
 import static com.bpointer.rkofficial.Common.AppConstant.ADMIN_EMAIL;
 import static com.bpointer.rkofficial.Common.AppConstant.ADMIN_WHATSAPP;
+import static com.bpointer.rkofficial.Common.AppConstant.AUTH_TOKEN;
 import static com.bpointer.rkofficial.Common.AppConstant.ID;
 import static com.bpointer.rkofficial.Common.AppConstant.MOBILE;
 import static com.bpointer.rkofficial.Common.AppConstant.NAME;
@@ -94,6 +95,11 @@ public class LoginMPINFragment extends Fragment {
                 customDialog.closeLoader();
                 if (response.body() != null) {
                     if (response.body().getStatus().equals("true")) {
+                        String authToken = response.body().getToken();
+                        if (authToken != null && !authToken.isEmpty()) {
+                            mPreferenceManager.setPreference(AUTH_TOKEN, authToken);
+                            Api.setAuthToken(authToken);
+                        }
                         mPreferenceManager.setIntPreference(ID, response.body().getUser().getId());
                         mPreferenceManager.setPreference(USER_ID, response.body().getUser().getUserId());
                         mPreferenceManager.setPreference(MOBILE, response.body().getUser().getContactNumber());

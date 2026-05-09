@@ -10,9 +10,20 @@ public class LoginResponseModel {
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("token")
+    @Expose
+    private String token;
     @SerializedName("user")
     @Expose
     private User user;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public String getStatus() {
         return status;

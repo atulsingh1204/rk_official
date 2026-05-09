@@ -114,6 +114,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void showLogoutDialog() {
         preferenceManager.cleasrprefernce();
+        com.bpointer.rkofficial.Api.Api.setAuthToken(null);
         sessionManager.setLogin(false);
         Intent i = new Intent(ProfileActivity.this, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

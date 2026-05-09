@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import static com.bpointer.rkofficial.Common.AppConstant.AUTH_TOKEN;
 import static com.bpointer.rkofficial.Common.AppConstant.TOKEN_ID;
 
 import retrofit2.Call;
@@ -41,7 +42,13 @@ public class SplashScreenActivity extends AppCompatActivity {
       customDialog = new CustomDialog(this);
       sessionManager = new SessionManager(SplashScreenActivity.this);
       preferenceManager = new PreferenceManager(SplashScreenActivity.this);
-      
+
+      // Restore persisted JWT auth token so it is sent with every API request
+      String savedAuthToken = preferenceManager.getStringPreference(AUTH_TOKEN);
+      if (savedAuthToken != null && !savedAuthToken.isEmpty()) {
+         Api.setAuthToken(savedAuthToken);
+      }
+
       FirebaseMessaging.getInstance().getToken()
             .addOnCompleteListener(new OnCompleteListener<String>() {
                @Override
