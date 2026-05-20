@@ -92,8 +92,10 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
     static final  int  UPI_GATEWAY_REQUEST_CODE = 10101;
     static final  int  TYPE_UPI_ID = 0;
     static final  int  TYPE_UPI_GATEWAY = 1;
+    static final  int  TYPE_EASEBUZZ = 2;
+    static final  int  TYPE_RAZORPAY = 3;
 
-    private int paymentType = TYPE_UPI_GATEWAY;
+    private int paymentType = TYPE_RAZORPAY;
     private Data upiGatewayPaymentData= null;
 
     @Override
@@ -408,8 +410,17 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
                 et_point.setError("Minimum 100/- point Accepted !");
                 et_point.requestFocus();
             } else {
-                // ── Razorpay Payment ──────────────────────────────────────────────
-                initiateRazorpayPayment(Integer.parseInt(et_point.getText().toString().trim()));
+                int amt = Integer.parseInt(et_point.getText().toString().trim());
+                // ── Switch payment gateway based on paymentType from postPaymentOptionList ──
+                switch (paymentType) {
+                    case TYPE_EASEBUZZ:
+                        createAccessKeyForEassBuzzPayment(amt);
+                        break;
+                    case TYPE_RAZORPAY:
+                    default:
+                        initiateRazorpayPayment(amt);
+                        break;
+                }
             }
         }
     }
