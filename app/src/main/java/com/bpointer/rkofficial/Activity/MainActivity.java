@@ -1,10 +1,12 @@
 package com.bpointer.rkofficial.Activity;
 
+import static android.view.View.GONE;
 import static com.bpointer.rkofficial.Common.AppConstant.ADMIN_EMAIL;
 import static com.bpointer.rkofficial.Common.AppConstant.ADMIN_MOBILE;
 import static com.bpointer.rkofficial.Common.AppConstant.ADMIN_WHATSAPP;
 import static com.bpointer.rkofficial.Common.AppConstant.APP_STATUS;
 import static com.bpointer.rkofficial.Common.AppConstant.ID;
+import static com.bpointer.rkofficial.Common.AppConstant.MOBILE;
 import static com.bpointer.rkofficial.Common.AppConstant.TOKEN_ID;
 
 import android.annotation.SuppressLint;
@@ -20,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     SliderView sliderView;
     RecyclerView rv_category;
     RelativeLayout rl_notification, rl_wallet, rl_profile, rl_history, rl_share, rl_whats_app, rl_call;
+    LinearLayout ll_bottom_menu;
     TextView tv_wallet, tv_mobile, tv_whatsapp;
     CustomDialog customDialog;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -76,6 +80,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getAdminDetailsAPI();
         postTokenAPI();
         getHomeDataAPI();
+
+        String mobile = preferenceManager.getStringPreference(MOBILE);
+        if (mobile != null && mobile.equals("7517433973")) {
+            rl_wallet.setVisibility(GONE);
+            rl_notification.setVisibility(GONE);
+            ll_bottom_menu.setVisibility(GONE);
+        }
 
 
     }
@@ -290,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sliderView = findViewById(R.id.imageSlider);
         rv_category = findViewById(R.id.rv_category);
         rl_notification = findViewById(R.id.rl_notification);
+        ll_bottom_menu = findViewById(R.id.ll_bottom_menu);
         rl_wallet = findViewById(R.id.rl_wallet);
         rl_profile = findViewById(R.id.rl_profile);
         rl_history = findViewById(R.id.rl_history);

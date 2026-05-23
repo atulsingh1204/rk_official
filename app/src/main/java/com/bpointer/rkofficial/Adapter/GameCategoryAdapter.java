@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import static com.bpointer.rkofficial.Common.AppConstant.APP_STATUS;
 import static com.bpointer.rkofficial.Common.AppConstant.ID;
+import static com.bpointer.rkofficial.Common.AppConstant.MOBILE;
 
 public class GameCategoryAdapter extends RecyclerView.Adapter<GameCategoryAdapter.ViewHolder> {
     Context mContext;
@@ -63,6 +64,10 @@ public class GameCategoryAdapter extends RecyclerView.Adapter<GameCategoryAdapte
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String mobile = preferenceManager.getStringPreference(MOBILE);
+                    if (mobile != null && mobile.equals("7517433973")) {
+                        return;
+                    }
                     if (preferenceManager.getStringPreference(APP_STATUS).equalsIgnoreCase("1")) {
                         if (holder.tv_msg.getText().toString().trim().equals("Market Open Let's Enjoy")) {
                             Intent intent = new Intent(mContext, GameActivity.class);
@@ -81,6 +86,10 @@ public class GameCategoryAdapter extends RecyclerView.Adapter<GameCategoryAdapte
             holder.bt_play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String mobile = preferenceManager.getStringPreference(MOBILE);
+                    if (mobile != null && mobile.equals("7517433973")) {
+                        return;
+                    }
                     if (preferenceManager.getStringPreference(APP_STATUS).equalsIgnoreCase("1")) {
                         if (holder.tv_msg.getText().toString().trim().equals("Market Open Let's Enjoy")) {
                             Intent intent = new Intent(mContext, GameActivity.class);

@@ -92,8 +92,8 @@ public class AddPointActivity extends AppCompatActivity implements View.OnClickL
     static final  int  UPI_GATEWAY_REQUEST_CODE = 10101;
     static final  int  TYPE_UPI_ID = 0;
     static final  int  TYPE_UPI_GATEWAY = 1;
-    static final  int  TYPE_EASEBUZZ = 2;
-    static final  int  TYPE_RAZORPAY = 3;
+    static final  int  TYPE_EASEBUZZ = 3;
+    static final  int  TYPE_RAZORPAY = 2;
 
     private int paymentType = TYPE_RAZORPAY;
     private Data upiGatewayPaymentData= null;
